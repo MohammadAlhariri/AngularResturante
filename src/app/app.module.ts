@@ -1,25 +1,25 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import "hammerjs";
-import { MenuComponent } from './menu/menu.component';
-import { MatListModule } from '@angular/material';
-import { MatGridListModule} from '@angular/material';
-import { MatCardModule} from '@angular/material';
-import{MatButtonModule} from '@angular/material';
-import { DishdetailComponent } from './dishdetail/dishdetail.component';
-import { DishService } from './services/dish.service';
-import { HeaderComponent } from './header/header.component';
-import { FooterComponent } from './footer/footer.component';
-import { AboutComponent } from './about/about.component';
-import { HomeComponent } from './home/home.component';
-import { ContactComponent } from './contact/contact.component';
-import { AppRoutingModule } from './app-routing/app-routing.module';
-import{PromotionService} from './services/promotion.service';
+import {AppComponent} from './app.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {FlexLayoutModule} from '@angular/flex-layout';
+import 'hammerjs';
+import {MenuComponent} from './menu/menu.component';
+import {MatButtonModule, MatCardModule, MatGridListModule, MatListModule} from '@angular/material';
+import {DishdetailComponent} from './dishdetail/dishdetail.component';
+import {DishService} from './services/dish.service';
+import {HeaderComponent} from './header/header.component';
+import {FooterComponent} from './footer/footer.component';
+import {AboutComponent} from './about/about.component';
+import {HomeComponent} from './home/home.component';
+import {ContactComponent} from './contact/contact.component';
+import {AppRoutingModule} from './app-routing/app-routing.module';
+import {PromotionService} from './services/promotion.service';
+import {LeaderService} from './services/leader.service';
+import { LoginComponent } from './login/login.component';
+import { MatDialogModule} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -31,6 +31,8 @@ import{PromotionService} from './services/promotion.service';
     AboutComponent,
     HomeComponent,
     ContactComponent,
+    LoginComponent,
+    MatDialogModule
   ],
   imports: [
     BrowserModule,
@@ -41,10 +43,14 @@ import{PromotionService} from './services/promotion.service';
     MatGridListModule,
     MatCardModule,
     MatButtonModule,
-AppRoutingModule ,
+    AppRoutingModule,
 
-],
-  providers: [DishService,PromotionService],
+  ],
+  entryComponents: [
+    LoginComponent
+  ],
+  providers: [DishService, PromotionService, LeaderService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
