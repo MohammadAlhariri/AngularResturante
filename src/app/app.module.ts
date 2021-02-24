@@ -18,6 +18,9 @@ import { FormsModule} from '@angular/forms';
 import { MatSelectModule} from '@angular/material/select';
 import { MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ReactiveFormsModule} from '@angular/forms';
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatSliderModule} from '@angular/material/slider';
+import { HttpClientModule} from '@angular/common/http';
 import 'hammerjs';
 import {MenuComponent} from './menu/menu.component';
 import {DishdetailComponent} from './dishdetail/dishdetail.component';
@@ -31,6 +34,9 @@ import { LoginComponent } from './login/login.component';
 import {PromotionService} from './services/promotion.service';
 import {LeaderService} from './services/leader.service';
 import {DishService} from './services/dish.service';
+import {ProcessHTTPMsgService} from './services/process-httpmsg.service';
+
+import { baseURL } from './shared/baseurl';
 
 @NgModule({
   declarations: [
@@ -61,13 +67,21 @@ import {DishService} from './services/dish.service';
     FormsModule,
     MatSelectModule,
     MatSlideToggleModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatProgressSpinnerModule,
+    MatSliderModule,
+    HttpClientModule
 
   ],
   entryComponents: [
     LoginComponent
   ],
-  providers: [DishService, PromotionService, LeaderService],
+  providers: [
+    DishService,
+    PromotionService,
+    LeaderService,
+    {provide: 'baseURL', useValue: baseURL},
+    ProcessHTTPMsgService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

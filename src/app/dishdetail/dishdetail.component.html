@@ -21,24 +21,32 @@
             <h3 *ngIf="dish">{{dish.name | uppercase}}</h3>
           </mat-card-title>
         </mat-card-header>
-        <img mat-card-image src={{dish.image}} alt={{dish.name}}>
+        <img src="{{ baseURL + dish.image }}" alt={{dish.name}}>
         <mat-card-content>
           <p>{{dish.description}}
           </p>
         </mat-card-content>
         <mat-card-actions>
+          <button mat-button [routerLink]="['/dishdetail', prev]"><span class="fa fa-chevron-left fa-lg"></span>
+          </button>
           <button mat-button (click)="goBack()">BACK</button>
           <button mat-button>LIKE</button>
           <button mat-button>SHARE</button>
+          <span class="flex-spacer"></span>
+          <button mat-button [routerLink]="['/dishdetail', next]"><span class="fa fa-chevron-right fa-lg"></span>
+          </button>
+
+
         </mat-card-actions>
       </mat-card>
     </div>
   </div>
 
   <div fxFlex="40">
+
     <div class="container"
          fxLayout="column"
-          fxLayoutGap="10px"
+         fxLayoutGap="10px"
          fxFlex *ngIf="dish">
       <mat-list fxFlex>
         <h1 matLine> Comments </h1>
@@ -56,9 +64,78 @@
           </p>
 
         </mat-list-item>
-      </mat-list>
+        <mat-list-item *ngIf="feedbackForm.get('message').value">
 
+          <p matLine>
+            <span> {{feedbackForm.get('message').value}} </span><br>
+
+          </p>
+          <p matLine>
+            <span> {{ matslider.value }} Stars</span><br>
+          </p>
+          <p matLine>
+            <span>-- {{feedbackForm.get('firstname').value}}</span><br>
+          </p>
+
+        </mat-list-item>
+
+      </mat-list>
+      <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+
+        <p>
+          <mat-form-field fxFlex="100">
+            <input matInput formControlName="firstname" placeholder="First Name" type="text" required>
+            <!--
+                        <mat-error *ngIf="formErrors.name">{{formErrors.name}}</mat-error>
+
+            -->
+            <mat-error *ngIf="feedbackForm.get('firstname').hasError('required')">
+              {{validationMessages.name.required}}
+            </mat-error>
+            <mat-error *ngIf="feedbackForm.get('firstname').hasError('minlength')">
+              {{validationMessages.name.minlength}}            </mat-error>
+            <mat-error *ngIf="feedbackForm.get('firstname').hasError('maxlength')">
+              {{validationMessages.name.maxlength}}            </mat-error>
+          </mat-form-field>
+
+        </p>
+        <p>
+          <mat-slider
+
+            thumbLabel
+            [displayWith]="formatLabel"
+            tickInterval="1"
+            min="0"
+            max="5"
+            value="5"
+            #matslider
+            (input)="pitch($event)"
+          ></mat-slider>
+
+        </p>
+
+        <p>
+          <mat-form-field fxFlex="100">
+            <textarea matInput formControlName="message" placeholder="Your Comment" rows=12 required></textarea>
+            <mat-error *ngIf="feedbackForm.get('message').hasError('required')">
+              {{validationMessages.message.required}}
+            </mat-error>
+            <mat-error *ngIf="feedbackForm.get('message').hasError('minlength')">
+              {{validationMessages.message.minlength}}            </mat-error>
+            <mat-error *ngIf="feedbackForm.get('message').hasError('maxlength')">
+              {{validationMessages.message.maxlength}}            </mat-error>          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="fform.form.invalid">Submit</button>
+      </form>
     </div>
+  </div>
+  <div [hidden]="dish || errMess">
+    <mat-spinner></mat-spinner>
+    <h4>Loading . . . Please Wait</h4>
+  </div>
+  <div fxFlex *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
   </div>
 
 </div>
