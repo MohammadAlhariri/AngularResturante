@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild,Inject} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Dish} from '../shared/dish';
 import {DishService} from '../services/dish.service';
 import {switchMap} from 'rxjs/operators';
@@ -6,7 +6,8 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ContactType, Feedback} from '../shared/feedback';
 import {ActivatedRoute, Params} from '@angular/router';
 import {Location} from '@angular/common';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {visibility,expand,flyInOut} from '../animations/app.animation';
+
 /*const DISH = {
   id: '0',
   name: 'Uthappizza',
@@ -54,18 +55,8 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
   animations: [
-    trigger('visibility', [
-      state('shown', style({
-        transform: 'scale(1.0)',
-        opacity: 1
-      })),
-      state('hidden', style({
-        transform: 'scale(0.5)',
-        opacity: 0
-      })),
-      transition('* => *', animate('0.5s ease-in-out'))
-    ])
-  ],
+    visibility,expand,flyInOut],
+
   styleUrls: ['./dishdetail.component.css']
 })
 export class DishdetailComponent implements OnInit {
@@ -91,7 +82,7 @@ export class DishdetailComponent implements OnInit {
       'required': 'Name is required.',
       'minlength': 'Name must be at least 2 characters long.',
       'maxlength': 'Name cannot be more than 25 characters long.'
-    },    'message': {
+    }, 'message': {
       'required': 'Message is required.',
       'minlength': 'Message must be at least 2 characters long.',
       'maxlength': 'Message cannot be more than 25 characters long.'
@@ -110,19 +101,27 @@ export class DishdetailComponent implements OnInit {
 
   ngOnInit() {
     this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds,
-      errmess => this.errMess = <any>errmess);
-/*    this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
+      errmess => this.errMess = <any> errmess);
+    /*    this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
+          .subscribe(dish => {
+            this.dish = dish;
+            this.setPrevNext(dish.id);
+          },errmess => this.errMess = <any>errmess);*/
+    /*    this.route.params
+          .pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
+          .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
+            errmess => this.errMess = <any>errmess );*/
+    this.route.params.pipe(switchMap((params: Params) => {
+      this.visibility = 'hidden';
+      return this.dishservice.getDish(+params['id']);
+    }))
       .subscribe(dish => {
-        this.dish = dish;
-        this.setPrevNext(dish.id);
-      },errmess => this.errMess = <any>errmess);*/
-/*    this.route.params
-      .pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
-      .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
-        errmess => this.errMess = <any>errmess );*/
-    this.route.params.pipe(switchMap((params: Params) => { this.visibility = 'hidden'; return this.dishservice.getDish(+params['id']); }))
-      .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); this.visibility = 'shown'; },
-        errmess => this.errMess = <any>errmess);
+          this.dish = dish;
+          this.dishcopy = dish;
+          this.setPrevNext(dish.id);
+          this.visibility = 'shown';
+        },
+        errmess => this.errMess = <any> errmess);
   }
 
   goBack(): void {
@@ -146,13 +145,16 @@ export class DishdetailComponent implements OnInit {
 
     this.onValueChanged(); // (re)set validation messages now
   }
-  rate:number;
+
+  rate: number;
 
   pitch(event: any) {
-    this.rate=event.value;
+    this.rate = event.value;
     console.log(event.value);
   }
-  newComment:Comment;
+
+  newComment: Comment;
+
   onSubmit() {
 
     this.dish.comments.push({
@@ -163,9 +165,14 @@ export class DishdetailComponent implements OnInit {
     });
     this.dishservice.putDish(this.dishcopy)
       .subscribe(dish => {
-          this.dish = dish; this.dishcopy = dish;
+          this.dish = dish;
+          this.dishcopy = dish;
         },
-        errmess => { this.dish = null; this.dishcopy = null; this.errMess = <any>errmess; });
+        errmess => {
+          this.dish = null;
+          this.dishcopy = null;
+          this.errMess = <any> errmess;
+        });
     console.log(this.feedback);
     this.feedbackForm.reset({
       firstname: '',
