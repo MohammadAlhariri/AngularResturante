@@ -4,7 +4,8 @@
      fxLayout.xs="column"
      fxLayoutAlign.gt-md="space-around center"
      fxLayoutGap="10px"
-     fxLayoutGap.xs="0">
+     fxLayoutGap.xs="0"
+     [@visibility]="visibility">
 
   <div fxFlex="100">
     <div>
@@ -21,7 +22,7 @@
             <h3 *ngIf="dish">{{dish.name | uppercase}}</h3>
           </mat-card-title>
         </mat-card-header>
-        <img src="{{ baseURL + dish.image }}" alt={{dish.name}}>
+        <img width="100%" src="{{ baseURL + dish.image }}" alt={{dish.name}}>
         <mat-card-content>
           <p>{{dish.description}}
           </p>
@@ -42,12 +43,13 @@
     </div>
   </div>
 
-  <div fxFlex="40">
-
+  <div fxFlex="40" *ngIf="dish" >
     <div class="container"
          fxLayout="column"
          fxLayoutGap="10px"
-         fxFlex *ngIf="dish">
+        >
+
+
       <mat-list fxFlex>
         <h1 matLine> Comments </h1>
         <mat-list-item *ngFor="let co of dish.comments">

@@ -37,6 +37,7 @@ import {DishService} from './services/dish.service';
 import {ProcessHTTPMsgService} from './services/process-httpmsg.service';
 
 import { baseURL } from './shared/baseurl';
+import { HighlightDirective } from './directives/highlight.directive';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { baseURL } from './shared/baseurl';
     HomeComponent,
     ContactComponent,
     LoginComponent,
+    HighlightDirective,
   ],
   imports: [
     BrowserModule,
