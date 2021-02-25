@@ -6,7 +6,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ContactType, Feedback} from '../shared/feedback';
 import {ActivatedRoute, Params} from '@angular/router';
 import {Location} from '@angular/common';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {expand, flyInOut, visibility} from '../animations/app.animation';
 /*const DISH = {
   id: '0',
   name: 'Uthappizza',
@@ -53,18 +53,16 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
+  // tslint:disable-next-line:use-host-property-decorator
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+  },
   animations: [
-    trigger('visibility', [
-      state('shown', style({
-        transform: 'scale(1.0)',
-        opacity: 1
-      })),
-      state('hidden', style({
-        transform: 'scale(0.5)',
-        opacity: 0
-      })),
-      transition('* => *', animate('0.5s ease-in-out'))
-    ])
+    visibility(),
+    flyInOut(),
+    expand()
+
   ],
   styleUrls: ['./dishdetail.component.css']
 })
@@ -154,7 +152,9 @@ export class DishdetailComponent implements OnInit {
   }
   newComment:Comment;
   onSubmit() {
-
+/*    this.newComment=this.feedbackForm.value;
+    this.newComment.date=new Date().toISOString();
+    this.dishcopy.comments.push(this.newComment);*/
     this.dish.comments.push({
       rating: this.rate,
       comment: this.feedbackForm.get('message').value,

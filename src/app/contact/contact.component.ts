@@ -1,11 +1,23 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ContactType, Feedback} from '../shared/feedback';
+import {expand, flyInOut} from '../animations/app.animation';
+import {FeedbackService} from '../services/feedback.service';
 
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.css']
+  styleUrls: ['./contact.component.css'],
+  // tslint:disable-next-line:use-host-property-decorator
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+  },
+  animations: [
+    flyInOut(),
+    expand()
+
+  ]
 })
 export class ContactComponent implements OnInit {
   @ViewChild('fform') feedbackFormDirective;
@@ -40,8 +52,10 @@ export class ContactComponent implements OnInit {
       'email': 'Email not in valid format.'
     },
   };
+  errMess: string;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private feedbackService:FeedbackService) {
     this.createForm();
   }
 
@@ -69,13 +83,19 @@ export class ContactComponent implements OnInit {
     });
     this.feedbackForm.valueChanges
       .subscribe(data => this.onValueChanged(data));
-
     this.onValueChanged(); // (re)set validation messages now
   }
-
+  feedbackcopy:Feedback;
   onSubmit() {
-    this.feedback = this.feedbackForm.value;
-    console.log(this.feedback);
+    this.feedbackcopy = this.feedbackForm.value;
+
+    this.feedbackService.submitFeedback(this.feedbackcopy)
+      .subscribe(feedback => {
+          this.feedback = feedback; this.feedbackcopy = feedback;
+        },
+        errmess => { this.feedback = null; this.feedbackcopy = null; this.errMess = <any>errmess; });
+
+
     this.feedbackForm.reset({
       firstname: '',
       lastname: '',
