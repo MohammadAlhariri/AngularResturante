@@ -53,9 +53,11 @@ export class ContactComponent implements OnInit {
     },
   };
   errMess: string;
+  visibility = 'shown';
+  show = "";
 
   constructor(private fb: FormBuilder,
-              private feedbackService:FeedbackService) {
+              private feedbackService: FeedbackService) {
     this.createForm();
   }
 
@@ -85,15 +87,32 @@ export class ContactComponent implements OnInit {
       .subscribe(data => this.onValueChanged(data));
     this.onValueChanged(); // (re)set validation messages now
   }
-  feedbackcopy:Feedback;
+
+  feedbackcopy: Feedback;
+
   onSubmit() {
     this.feedbackcopy = this.feedbackForm.value;
+    this.visibility = null;
+    this.show="show";
 
     this.feedbackService.submitFeedback(this.feedbackcopy)
       .subscribe(feedback => {
-          this.feedback = feedback; this.feedbackcopy = feedback;
+          this.visibility = 'hidden';
+          this.feedback = this.feedbackcopy;
+          setTimeout(() => {
+            this.feedback =null;
+            this.show=null;
+
+          }, 5000);
+
         },
-        errmess => { this.feedback = null; this.feedbackcopy = null; this.errMess = <any>errmess; });
+        errmess => {
+          this.feedback = null;
+          this.feedbackcopy = null;
+          this.errMess = <any> errmess;
+          this.visibility = 'shown';
+          this.show=null;
+        });
 
 
     this.feedbackForm.reset({
